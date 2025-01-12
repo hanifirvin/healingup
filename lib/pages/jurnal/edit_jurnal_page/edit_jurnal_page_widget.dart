@@ -56,10 +56,10 @@ class _EditJurnalPageWidgetState extends State<EditJurnalPageWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<JurnalRecord>(
-      future: JurnalRecord.getDocumentOnce(widget.jurnalRef!),
+      future: widget.jurnalRef?.get().then((snapshot) => 
+        snapshot.exists ? JurnalRecord.fromSnapshot(snapshot) : throw Exception('Journal not found')),
       builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             body: Center(
@@ -72,6 +72,15 @@ class _EditJurnalPageWidgetState extends State<EditJurnalPageWidget> {
                   ),
                 ),
               ),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            body: Center(
+              child: Text('Error loading journal data'),
             ),
           );
         }
@@ -120,42 +129,8 @@ class _EditJurnalPageWidgetState extends State<EditJurnalPageWidget> {
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () async {
-                                if ((_model.judulTextController.text !=
-                                            '') &&
-                                    (editJurnalPageJurnalRecord.detail !=
-                                            '')) {
-                                  await widget.jurnalRef!
-                                      .update(createJurnalRecordData(
-                                    detail: _model.detailTextController.text,
-                                    judul: _model.judulTextController.text,
-                                    dateTime: getCurrentTimestamp,
-                                    sliderValue:
-                                        editJurnalPageJurnalRecord.sliderValue,
-                                  ));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Jurnal berhasil diupdate!',
-                                        style: FlutterFlowTheme.of(context)
-                                            .titleLarge
-                                            .override(
-                                              fontFamily: 'Poppins',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryText,
-                                              fontSize: 16.0,
-                                              letterSpacing: 0.0,
-                                            ),
-                                      ),
-                                      duration: const Duration(milliseconds: 4000),
-                                      backgroundColor:
-                                          FlutterFlowTheme.of(context)
-                                              .secondary,
-                                    ),
-                                  );
-
-                                  context.pushNamed('jurnal_page');
-                                } else {
+                                if ((_model.judulTextController.text.isEmpty ||
+                                    _model.detailTextController.text.isEmpty)) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
@@ -164,9 +139,60 @@ class _EditJurnalPageWidgetState extends State<EditJurnalPageWidget> {
                                             .titleLarge
                                             .override(
                                               fontFamily: 'Poppins',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryText,
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                            ),
+                                      ),
+                                      duration: const Duration(milliseconds: 4000),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context).error,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                
+                                try {
+                                  await widget.jurnalRef?.update(createJurnalRecordData(
+                                    detail: _model.detailTextController.text,
+                                    judul: _model.judulTextController.text,
+                                    dateTime: getCurrentTimestamp,
+                                    sliderValue: _model.sliderValue,
+                                  ));
+                                  
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Jurnal berhasil diupdate!',
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleLarge
+                                            .override(
+                                              fontFamily: 'Poppins',
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primaryText,
+                                              fontSize: 16.0,
+                                              letterSpacing: 0.0,
+                                            ),
+                                      ),
+                                      duration: const Duration(milliseconds: 4000),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context).secondary,
+                                    ),
+                                  );
+
+                                  context.pushNamed('jurnal_page');
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Error updating journal: ${e.toString()}',
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleLarge
+                                            .override(
+                                              fontFamily: 'Poppins',
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primaryText,
                                               fontSize: 16.0,
                                               letterSpacing: 0.0,
                                             ),
@@ -232,30 +258,120 @@ class _EditJurnalPageWidgetState extends State<EditJurnalPageWidget> {
                             width: 50.0,
                             height: 50.0,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.error_outline,
+                              color: FlutterFlowTheme.of(context).error,
+                              size: 50.0,
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
                           ),
                           Image.network(
                             'https://img.icons8.com/emoji/96/expressionless-face.png',
                             width: 50.0,
                             height: 50.0,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.error_outline,
+                              color: FlutterFlowTheme.of(context).error,
+                              size: 50.0,
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
                           ),
                           Image.network(
                             'https://img.icons8.com/emoji/96/smiling-face.png',
                             width: 50.0,
                             height: 50.0,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.error_outline,
+                              color: FlutterFlowTheme.of(context).error,
+                              size: 50.0,
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
                           ),
                           Image.network(
                             'https://img.icons8.com/emoji/96/grinning-face-emoji.png',
                             width: 50.0,
                             height: 50.0,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.error_outline,
+                              color: FlutterFlowTheme.of(context).error,
+                              size: 50.0,
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
                           ),
                           Image.network(
                             'https://img.icons8.com/emoji/96/grinning-squinting-face--v2.png',
                             width: 50.0,
                             height: 50.0,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.error_outline,
+                              color: FlutterFlowTheme.of(context).error,
+                              size: 50.0,
+                            ),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

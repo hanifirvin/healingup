@@ -27,9 +27,6 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Web related
-lib/generated_plugin_registrant.dart
-
 # Symbolication related
 app.*.symbols
 
@@ -41,7 +38,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase config files
+# Firebase configuration files
 google-services.json
 GoogleService-Info.plist
 
@@ -51,6 +48,9 @@ GoogleService-Info.plist
 # Flutter Version Management
 .fvm/
 
-# Coverage
+# Coverage reports
 coverage/
-.test_coverage.dart
+
+# SonarQube
+.scannerwork/
+.sonar/
