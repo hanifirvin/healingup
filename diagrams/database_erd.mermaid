@@ -1,0 +1,59 @@
+erDiagram
+    USERS {
+        string uid PK
+        string email
+        string display_name
+        string photo_url
+        timestamp created_time
+        string phone_number
+        number kessler
+        string shortDescription
+        timestamp last_active_time
+        string role
+        string title
+        string result_kessler
+        timestamp result_time
+        timestamp[] waktu_pengukuran
+        string spesialisasi
+        number pengalaman
+        string[] availableHours
+        boolean isDoctorAvailable
+        string deskripsiDokter
+    }
+
+    SESSIONS {
+        string sessionId PK
+        string patientId FK
+        string doctorId FK
+        timestamp startTime
+        timestamp endTime
+        string status
+        string notes
+        timestamp createdAt
+        string bookingId
+        string doctorName
+        number reviewRating
+        string reviewNotes
+    }
+
+    KESSLER {
+        string patientId FK
+        number hasil_kessler
+        timestamp waktu_riwayat
+    }
+
+    JURNAL {
+        string jurnalId PK
+        string patientId FK
+        string detail
+        string judul
+        timestamp date_time
+        string email
+        timestamp created_time
+        number slider_value
+    }
+
+    USERS ||--o{ SESSIONS : "has as patient"
+    USERS ||--o{ SESSIONS : "has as doctor"
+    USERS ||--o{ KESSLER : "takes"
+    USERS ||--o{ JURNAL : "writes"

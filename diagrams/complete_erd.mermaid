@@ -1,0 +1,87 @@
+erDiagram
+    USERS {
+        uid string PK
+        email string
+        display_name string
+        photo_url string
+        created_time timestamp
+        phone_number string
+        kessler number
+        shortDescription string
+        role string
+        title string
+        result_kessler string
+        result_time timestamp
+        waktu_pengukuran timestamp[]
+        spesialisasi string
+        pengalaman number
+        availableHours string[]
+        isDoctorAvailable boolean
+        deskripsiDokter string
+    }
+
+    SESSIONS {
+        sessionId string PK
+        patientId string FK
+        doctorId string FK
+        startTime timestamp
+        endTime timestamp
+        status string
+        notes string
+        createdAt timestamp
+        bookingId string FK
+        doctorName string
+        reviewRating number
+        reviewNotes string
+    }
+
+    BOOKINGS {
+        bookingId string PK
+        patientId string FK
+        doctorId string FK
+        patientName string
+        doctorName string
+        date timestamp
+        time string
+        notes string
+        status string
+        videoCallUrl string
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+    KESSLER {
+        assessmentId string PK
+        patientId string FK
+        hasil_kessler number
+        waktu_riwayat timestamp
+    }
+
+    JURNAL {
+        jurnalId string PK
+        patientId string FK
+        detail string
+        judul string
+        date_time timestamp
+        email string
+        created_time timestamp
+        slider_value number
+    }
+
+    REVIEWS {
+        reviewId string PK
+        sessionId string FK
+        rating number
+        review string
+        createdAt timestamp
+        patientName string
+    }
+
+    USERS ||--o{ SESSIONS : "has as patient"
+    USERS ||--o{ SESSIONS : "has as doctor"
+    USERS ||--o{ BOOKINGS : "books as patient"
+    USERS ||--o{ BOOKINGS : "receives as doctor"
+    USERS ||--o{ KESSLER : "takes"
+    USERS ||--o{ JURNAL : "writes"
+    SESSIONS ||--o{ REVIEWS : "receives"
+    BOOKINGS ||--|| SESSIONS : "creates"
