@@ -112,10 +112,7 @@ class _RiwayatJurnalPasienWidgetState extends State<RiwayatJurnalPasienWidget> {
                 },
               ),
               title: Text(
-                'Jurnal ${valueOrDefault<String>(
-                  riwayatJurnalPasienBookingRecord?.patientName,
-                  'Nama Pasien',
-                )}',
+                'Jurnal',
                 style: FlutterFlowTheme.of(context).headlineMedium.override(
                       fontFamily: 'Poppins',
                       color: const Color(0xFF6264A7),

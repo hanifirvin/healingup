@@ -2,6 +2,8 @@ import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'isi_jurnal_pasien_model.dart';
 export 'isi_jurnal_pasien_model.dart';
 
@@ -25,6 +27,7 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('id_ID', null);
     _model = createModel(context, () => IsiJurnalPasienModel());
 
     _model.judulFocusNode ??= FocusNode();
@@ -83,7 +86,7 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                           const EdgeInsetsDirectional.fromSTEB(20.0, 15.0, 20.0, 0.0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           InkWell(
                             splashColor: Colors.transparent,
@@ -96,7 +99,7 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                             child: const Icon(
                               Icons.arrow_back_ios_new,
                               color: Color(0xFF6264A7),
-                              size: 28.0,
+                              size: 24.0,
                             ),
                           ),
                         ],
@@ -118,7 +121,7 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                                   .bodyMedium
                                   .override(
                                     fontFamily: 'Poppins',
-                                    fontSize: 14.0,
+                                    fontSize: 16.0,
                                     letterSpacing: 0.0,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -200,7 +203,6 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                                   .bodyMedium
                                   .override(
                                     fontFamily: 'Poppins',
-                                    fontSize: 16.0,
                                     letterSpacing: 0.0,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -209,127 +211,108 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                         ],
                       ),
                     ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            24.0, 12.0, 24.0, 12.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: 110.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primaryBtnText,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    12.0, 0.0, 12.0, 0.0),
-                                child: TextFormField(
-                                  controller: _model.judulTextController ??=
-                                      TextEditingController(
-                                    text: isiJurnalPasienJurnalRecord.judul,
-                                  ),
-                                  focusNode: _model.judulFocusNode,
-                                  autofocus: false,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    labelStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          fontFamily: 'Readex Pro',
-                                          letterSpacing: 0.0,
-                                        ),
-                                    hintText:
-                                        'Berikan judul aktivitasmu hari ini...',
-                                    hintStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          fontFamily: 'Readex Pro',
-                                          letterSpacing: 0.0,
-                                        ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    errorBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    focusedErrorBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
+                    Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 0.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 90.0,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).primaryBtnText,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  12.0, 0.0, 12.0, 0.0),
+                              child: TextFormField(
+                                controller: _model.judulTextController ??=
+                                    TextEditingController(
+                                  text: isiJurnalPasienJurnalRecord.judul,
+                                ),
+                                focusNode: _model.judulFocusNode,
+                                readOnly: true,
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  labelStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
                                       .override(
                                         fontFamily: 'Readex Pro',
                                         letterSpacing: 0.0,
                                       ),
-                                  textAlign: TextAlign.start,
-                                  maxLines: 3,
-                                  validator: _model.judulTextControllerValidator
-                                      .asValidator(context),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    12.0, 0.0, 12.0, 0.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Icon(
-                                      Icons.calendar_today_outlined,
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      size: 20.0,
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context).alternate,
+                                      width: 2.0,
                                     ),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            12.0, 8.0, 5.0, 8.0),
-                                        child: Text(
-                                          dateTimeFormat(
-                                              "H:mm EEEE, d MMMM yyyy",
-                                              isiJurnalPasienJurnalRecord
-                                                  .dateTime!),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context).primary,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  errorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context).error,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedErrorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context).error,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Readex Pro',
+                                      letterSpacing: 0.0,
+                                    ),
+                                validator: _model.judulTextControllerValidator
+                                    .asValidator(context),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  12.0, 0.0, 12.0, 0.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                    size: 20.0,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          12.0, 0.0, 5.0, 0.0),
+                                      child: Text(
+                                        DateFormat('HH:mm, EEEE dd MMMM yyyy', 'id_ID')
+                                            .format(isiJurnalPasienJurnalRecord.dateTime!),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Readex Pro',
+                                              letterSpacing: 0.0,
+                                            ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -356,28 +339,27 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          24.0, 12.0, 24.0, 12.0),
-                      child: Container(
-                        width: double.infinity,
-                        height: 150.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryBtnText,
-                          borderRadius: BorderRadius.circular(14.0),
-                          shape: BoxShape.rectangle,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              5.0, 5.0, 5.0, 5.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: Padding(
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 12.0),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).primaryBtnText,
+                            borderRadius: BorderRadius.circular(14.0),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                5.0, 5.0, 5.0, 5.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
-                                      12.0, 8.0, 12.0, 8.0),
+                                      12.0, 0.0, 12.0, 0.0),
                                   child: Text(
                                     'Isi catatan jurnal pasien',
                                     style: FlutterFlowTheme.of(context)
@@ -385,55 +367,48 @@ class _IsiJurnalPasienWidgetState extends State<IsiJurnalPasienWidget> {
                                         .override(
                                           fontFamily: 'Readex Pro',
                                           letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                   ),
                                 ),
-                              ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      12.0, 0.0, 12.0, 5.0),
-                                  child: TextFormField(
-                                    controller: _model.detailTextController ??=
-                                        TextEditingController(
-                                      text: isiJurnalPasienJurnalRecord.detail,
-                                    ),
-                                    focusNode: _model.detailFocusNode,
-                                    autofocus: false,
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      labelStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                        12.0, 0.0, 12.0, 5.0),
+                                    child: TextFormField(
+                                      controller: _model.detailTextController ??=
+                                          TextEditingController(
+                                        text: isiJurnalPasienJurnalRecord.detail,
+                                      ),
+                                      focusNode: _model.detailFocusNode,
+                                      readOnly: true,
+                                      obscureText: false,
+                                      decoration: InputDecoration(
+                                        labelStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .override(
+                                              fontFamily: 'Readex Pro',
+                                              letterSpacing: 0.0,
+                                            ),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                      ),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
                                           .override(
                                             fontFamily: 'Readex Pro',
                                             letterSpacing: 0.0,
                                           ),
-                                      hintText: 'tulis disini...',
-                                      hintStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            fontFamily: 'Readex Pro',
-                                            letterSpacing: 0.0,
-                                          ),
-                                      enabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      focusedErrorBorder: InputBorder.none,
+                                      maxLines: null,
+                                      validator: _model.detailTextControllerValidator
+                                          .asValidator(context),
                                     ),
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Readex Pro',
-                                          letterSpacing: 0.0,
-                                        ),
-                                    maxLines: 5,
-                                    validator: _model
-                                        .detailTextControllerValidator
-                                        .asValidator(context),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

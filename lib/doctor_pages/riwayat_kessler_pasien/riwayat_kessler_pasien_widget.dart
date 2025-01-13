@@ -3,6 +3,8 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'riwayat_kessler_pasien_model.dart';
 export 'riwayat_kessler_pasien_model.dart';
 
@@ -28,6 +30,7 @@ class _RiwayatKesslerPasienWidgetState
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('id_ID', null);
     _model = createModel(context, () => RiwayatKesslerPasienModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -162,10 +165,8 @@ class _RiwayatKesslerPasienWidgetState
                                             ),
                                           ),
                                           Text(
-                                            dateTimeFormat(
-                                                "MMMMEEEEd",
-                                                listViewKesslerRecord
-                                                    .waktuRiwayat!),
+                                            DateFormat('EEEE, d MMMM yyyy', 'id_ID')
+                                                .format(listViewKesslerRecord.waktuRiwayat!),
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
