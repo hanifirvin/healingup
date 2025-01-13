@@ -37,9 +37,6 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _boxBreath = prefs.getInt('ff_boxBreath') ?? _boxBreath;
     });
-    _safeInit(() {
-      _four78Breath = prefs.getInt('ff_four78Breath') ?? _four78Breath;
-    });
   }
 
   void update(VoidCallback callback) {
@@ -178,13 +175,6 @@ class FFAppState extends ChangeNotifier {
   set boxBreath(int value) {
     _boxBreath = value;
     prefs.setInt('ff_boxBreath', value);
-  }
-
-  int _four78Breath = 1;
-  int get four78Breath => _four78Breath;
-  set four78Breath(int value) {
-    _four78Breath = value;
-    prefs.setInt('ff_four78Breath', value);
   }
 }
 
