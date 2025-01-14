@@ -1,55 +1,104 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth.uid == document;
+    // Helper functions for role checking
+    function isDoctor() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'doctor';
+    }
+
+    function isPatient() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'patient';
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // User collection rules
+    match /users/{userId} {
+      allow create: if request.auth != null && 
+        request.resource.data.keys().hasAll(['role', 'email']) &&
+        (request.resource.data.role == 'patient' || request.resource.data.role == 'doctor');
+      allow read: if request.auth != null;
+      allow write: if isOwner(userId);
       allow delete: if false;
     }
 
+    // Journal collection rules
     match /jurnal/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        isDoctor()
+      );
+      allow write: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        isDoctor()
+      );
+      allow delete: if false;
     }
 
+    // Kessler test collection rules
     match /kessler/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        isDoctor()
+      );
+      allow write: if request.auth != null && isDoctor();
+      allow delete: if false;
     }
 
-    match /users/{parent}/bookings/{document} {
-      allow create: if request.auth.uid == parent;
-      allow read: if true;
-      allow write: if request.auth.uid == parent;
-      allow delete: if request.auth.uid == parent;
-    }
-
-    match /users/{parent}/reviews/{document} {
-      allow create: if request.auth.uid == parent;
-      allow read: if true;
-      allow write: if request.auth.uid == parent;
-      allow delete: if request.auth.uid == parent;
-    }
-
+    // Booking collection rules
     match /booking/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid
+      );
+      allow write: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid
+      );
+      allow delete: if false;
     }
 
+    // Session collection rules
     match /sessions/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid
+      );
+      allow write: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid
+      );
+      allow delete: if false;
     }
 
+    // User-specific booking subcollection
+    match /users/{parent}/bookings/{document} {
+      allow create: if isOwner(parent);
+      allow read: if request.auth != null && (
+        isOwner(parent) ||
+        isDoctor()
+      );
+      allow write: if isOwner(parent);
+      allow delete: if false;
+    }
+
+    // User reviews subcollection
+    match /users/{parent}/reviews/{document} {
+      allow create: if isOwner(parent);
+      allow read: if request.auth != null;
+      allow write: if isOwner(parent);
+      allow delete: if false;
+    }
+
+    // ff_user_push_notifications collection rules
     match /ff_user_push_notifications/{id} {
       allow read, update, delete: if false;
       allow create: if /databases/$(database)/documents/users/$(request.auth.uid) == request.resource.data.sender;
