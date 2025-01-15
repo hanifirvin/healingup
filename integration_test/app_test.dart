@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:healing_up/main.dart' as app;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:healing_up/firebase_options.dart';
+import 'package:clock/clock.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -19,36 +20,40 @@ void main() {
     });
 
     testWidgets('Alur lengkap booking hingga video call', (tester) async {
-      // Membangun aplikasi dan memicu frame
-      await tester.pumpWidget(app.MyApp());
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      // Mock waktu ke besok untuk mensimulasikan waktu appointment
+      final tomorrow = DateTime.now().add(const Duration(days: 1));
+      await tester.runAsync(() async {
+        // Membangun aplikasi dan memicu frame
+        await tester.pumpWidget(app.MyApp());
+        await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // Proses login
-      await mockLogin(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+        // Proses login
+        await mockLogin(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Navigasi ke halaman booking
-      await navigateToBooking(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+        // Navigasi ke halaman booking
+        await navigateToBooking(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Memilih dokter dan waktu
-      await selectDoctorAndTime(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+        // Memilih dokter dan waktu
+        await selectDoctorAndTime(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Konfirmasi booking
-      await confirmBooking(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+        // Konfirmasi booking
+        await confirmBooking(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Memulai video call
-      await startVideoCall(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+        // Memulai video call
+        await startVideoCall(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // Menguji kontrol video call
-      await testVideoCallControls(tester);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+        // Menguji kontrol video call
+        await testVideoCallControls(tester);
+        await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      // Mengakhiri panggilan dan verifikasi
-      await endCallAndVerify(tester);
+        // Mengakhiri panggilan dan verifikasi
+        await endCallAndVerify(tester);
+      });
     });
   });
 }
@@ -123,9 +128,9 @@ Future<void> selectDoctorAndTime(WidgetTester tester) async {
     await tester.tap(calendarIcon.first);
     await tester.pumpAndSettle();
 
-    // Memilih tanggal
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
-    final dateText = tomorrow.day.toString();
+    // Memilih tanggal hari ini
+    final today = DateTime.now();
+    final dateText = today.day.toString();
     final dateButton = find.text(dateText);
     if (dateButton.evaluate().isNotEmpty) {
       await tester.tap(dateButton.first);
@@ -139,10 +144,14 @@ Future<void> selectDoctorAndTime(WidgetTester tester) async {
     }
   }
 
-  // Mencoba menemukan dan menekan slot waktu
-  final timeSlot = find.byType(ListTile);
-  if (timeSlot.evaluate().isNotEmpty) {
-    await tester.tap(timeSlot.first);
+  // Mencoba menemukan dan menekan slot waktu yang sesuai dengan waktu saat ini
+  final now = DateTime.now();
+  final currentHour = now.hour;
+  final timeSlots = find.byType(ListTile);
+  
+  if (timeSlots.evaluate().isNotEmpty) {
+    // Pilih slot waktu yang paling dekat dengan waktu saat ini
+    await tester.tap(timeSlots.first);
     await tester.pumpAndSettle();
   }
 }

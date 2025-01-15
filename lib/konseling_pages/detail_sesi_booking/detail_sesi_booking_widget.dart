@@ -184,9 +184,10 @@ class _DetailSesiBookingWidgetState extends State<DetailSesiBookingWidget> {
                                     ),
                                     Text(
                                       dateTimeFormat(
-                                          "MMMMEEEEd",
+                                          'EEEE, d MMMM yyyy',
                                           detailSesiBookingBookingRecord!
-                                              .date!),
+                                              .date!,
+                                          locale: 'id_ID'),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
@@ -265,7 +266,7 @@ class _DetailSesiBookingWidgetState extends State<DetailSesiBookingWidget> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Dokter:',
+                                      'Psikolog:',
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
@@ -410,7 +411,7 @@ class _DetailSesiBookingWidgetState extends State<DetailSesiBookingWidget> {
                                             valueOrDefault<String>(
                                               detailSesiBookingBookingRecord
                                                   .status,
-                                              'terjadwall',
+                                              'terjadwal',
                                             ),
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium

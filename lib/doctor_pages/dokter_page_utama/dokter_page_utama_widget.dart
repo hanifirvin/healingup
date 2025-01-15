@@ -38,6 +38,22 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
     super.dispose();
   }
 
+  String formatDateIndonesian(DateTime date) {
+    final List<String> namaBulan = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    final List<String> namaHari = [
+      'Senin', 'Selasa', 'Rabu', 'Kamis',
+      'Jumat', 'Sabtu', 'Minggu'
+    ];
+    
+    // Adjust weekday to match Indonesian format (Monday = 0)
+    final int adjustedWeekday = (date.weekday - 1) % 7;
+    
+    return '${namaHari[adjustedWeekday]}, ${date.day} ${namaBulan[date.month - 1]} ${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -51,7 +67,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
             backgroundColor: const Color(0xFF5D629A),
             automaticallyImplyLeading: false,
             title: Text(
-              'Dokter HomePage',
+              'Psikolog HomePage',
               style: FlutterFlowTheme.of(context).headlineMedium.override(
                     fontFamily: 'Poppins',
                     color: Colors.white,
@@ -326,7 +342,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'Pasien Hari Ini',
+                                'List Sesi',
                                 style: FlutterFlowTheme.of(context)
                                     .headlineSmall
                                     .override(
@@ -346,16 +362,13 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                       .where(
                                         'date',
                                         isGreaterThanOrEqualTo:
-                                            functions.getStartOfDay(),
-                                      )
-                                      .where(
-                                        'date',
-                                        isLessThan: functions.getEndOfDay(),
+                                            DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
                                       )
                                       .where(
                                         'doctorId',
                                         isEqualTo: currentUserUid,
-                                      ),
+                                      )
+                                      .orderBy('date'),
                                 ),
                                 builder: (context, snapshot) {
                                   // Customize what your widget looks like when it's loading.
@@ -446,8 +459,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                                           style: TextStyle(),
                                                         ),
                                                         TextSpan(
-                                                          text: dateTimeFormat(
-                                                              "MMMMEEEEd",
+                                                          text: formatDateIndonesian(
                                                               listViewBookingRecord
                                                                   .date!),
                                                           style: const TextStyle(),

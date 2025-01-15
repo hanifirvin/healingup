@@ -41,6 +41,22 @@ class _DetailSesiDokterWidgetState extends State<DetailSesiDokterWidget> {
     super.dispose();
   }
 
+  String formatDateIndonesian(DateTime date) {
+    final List<String> namaBulan = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    final List<String> namaHari = [
+      'Senin', 'Selasa', 'Rabu', 'Kamis',
+      'Jumat', 'Sabtu', 'Minggu'
+    ];
+    
+    // Adjust weekday to match Indonesian format (Monday = 0)
+    final int adjustedWeekday = (date.weekday - 1) % 7;
+    
+    return '${namaHari[adjustedWeekday]}, ${date.day} ${namaBulan[date.month - 1]} ${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BookingRecord>>(
@@ -181,8 +197,7 @@ class _DetailSesiDokterWidgetState extends State<DetailSesiDokterWidget> {
                                           ),
                                     ),
                                     Text(
-                                      dateTimeFormat("MMMMEEEEd",
-                                          detailSesiDokterBookingRecord!.date!),
+                                      formatDateIndonesian(detailSesiDokterBookingRecord!.date!),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(

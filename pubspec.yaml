@@ -142,6 +142,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  clock: ^1.1.1
   flutter_lints: 4.0.0
   lints: 4.0.0
 

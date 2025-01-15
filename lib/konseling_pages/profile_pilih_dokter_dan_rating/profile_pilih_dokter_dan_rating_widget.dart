@@ -536,26 +536,6 @@ class _ProfilePilihDokterDanRatingWidgetState
                                                       ),
                                                     ],
                                                   ),
-                                                  Text(
-                                                    valueOrDefault<String>(
-                                                      dateTimeFormat(
-                                                          "relative",
-                                                          listViewReviewsRecord
-                                                              .createdAt),
-                                                      'createdAt',
-                                                    ),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodySmall
-                                                        .override(
-                                                          fontFamily:
-                                                              'Readex Pro',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                  ),
                                                 ],
                                               ),
                                               RichText(

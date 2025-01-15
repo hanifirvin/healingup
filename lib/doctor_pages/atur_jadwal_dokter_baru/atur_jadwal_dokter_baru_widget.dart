@@ -165,7 +165,9 @@ class _AturJadwalDokterBaruWidgetState
                                     ChipData('Selasa'),
                                     ChipData('Rabu'),
                                     ChipData('Kamis'),
-                                    ChipData('Jumat')
+                                    ChipData('Jumat'),
+                                    ChipData('Sabtu'),
+                                    ChipData('Minggu'),
                                   ],
                                   onChanged: (val) => safeSetState(
                                       () => _model.choiceChipsValues1 = val),

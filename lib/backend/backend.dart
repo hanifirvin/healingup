@@ -3,12 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../auth/firebase_auth/auth_util.dart';
 
 import '../flutter_flow/flutter_flow_util.dart';
+
 import 'schema/util/firestore_util.dart';
+import 'schema/util/schema_util.dart';
 
 import 'schema/users_record.dart';
 import 'schema/jurnal_record.dart';
 import 'schema/kessler_record.dart';
-import 'schema/bookings_record.dart';
 import 'schema/reviews_record.dart';
 import 'schema/booking_record.dart';
 import 'schema/sessions_record.dart';
@@ -23,7 +24,6 @@ export 'schema/util/schema_util.dart';
 export 'schema/users_record.dart';
 export 'schema/jurnal_record.dart';
 export 'schema/kessler_record.dart';
-export 'schema/bookings_record.dart';
 export 'schema/reviews_record.dart';
 export 'schema/booking_record.dart';
 export 'schema/sessions_record.dart';
@@ -134,46 +134,6 @@ Future<List<KesslerRecord>> queryKesslerRecordOnce({
     queryCollectionOnce(
       KesslerRecord.collection,
       KesslerRecord.fromSnapshot,
-      queryBuilder: queryBuilder,
-      limit: limit,
-      singleRecord: singleRecord,
-    );
-
-/// Functions to query BookingsRecords (as a Stream and as a Future).
-Future<int> queryBookingsRecordCount({
-  DocumentReference? parent,
-  Query Function(Query)? queryBuilder,
-  int limit = -1,
-}) =>
-    queryCollectionCount(
-      BookingsRecord.collection(parent),
-      queryBuilder: queryBuilder,
-      limit: limit,
-    );
-
-Stream<List<BookingsRecord>> queryBookingsRecord({
-  DocumentReference? parent,
-  Query Function(Query)? queryBuilder,
-  int limit = -1,
-  bool singleRecord = false,
-}) =>
-    queryCollection(
-      BookingsRecord.collection(parent),
-      BookingsRecord.fromSnapshot,
-      queryBuilder: queryBuilder,
-      limit: limit,
-      singleRecord: singleRecord,
-    );
-
-Future<List<BookingsRecord>> queryBookingsRecordOnce({
-  DocumentReference? parent,
-  Query Function(Query)? queryBuilder,
-  int limit = -1,
-  bool singleRecord = false,
-}) =>
-    queryCollectionOnce(
-      BookingsRecord.collection(parent),
-      BookingsRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,

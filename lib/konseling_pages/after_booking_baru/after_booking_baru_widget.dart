@@ -219,7 +219,7 @@ class _AfterBookingBaruWidgetState extends State<AfterBookingBaruWidget> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Dokter:',
+                                      'Psikolog:',
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(

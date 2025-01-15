@@ -55,7 +55,7 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget> {
         agoraConnectionData: AgoraConnectionData(
           appId: "ef765920bdaf49acb817117f3dbf2df1",
           channelName: "healinguper",
-          tempToken: '007eJxTYEh8ujpl2WLH/8HSV3q8N5jcOnp1+sUVEtVH7O9GmTjNVXiowJCaZm5mamlkkJSSmGZimZicZGFobmhonmackpRmlJJm2G9Tnt4QyMgw7cEbRkYGCATxuRkyUhNzMvPSSwtSixgYAAOGJSc=',
+          tempToken: '007eJxTYLjx+p6nS7f29Q5Jr7B27US1z1z6W2RXe1TJt9Q9vr3h5WwFhtQ0czNTSyODpJTENBPLxOQkC0NzQ0PzNOOUpDSjlDTDWefa0hsCGRlSed4zMjJAIIjPzZCRmpiTmZdeWpBaxMAAAGJ5I0M=',
           uid: 0, // Set to 0 for auto-assignment
         ),
         enabledPermission: [

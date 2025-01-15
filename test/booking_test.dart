@@ -11,39 +11,50 @@ void main() {
         time: '10:00',
         doctorId: 'doctor123',
         patientId: 'patient123',
-        status: 'confirmed'
+        status: 'terjadwal',
+        notes: 'Konsultasi pertama',
       );
 
       expect(bookingData['date'], equals(testDate));
       expect(bookingData['time'], equals('10:00'));
       expect(bookingData['doctorId'], equals('doctor123'));
       expect(bookingData['patientId'], equals('patient123'));
-      expect(bookingData['status'], equals('confirmed'));
+      expect(bookingData['status'], equals('terjadwal'));
+      expect(bookingData['notes'], equals('Konsultasi pertama'));
     });
 
-    test('Create booking with minimum required fields', () {
+    test('Create booking with required fields', () {
       final bookingData = createBookingRecordData(
+        date: testDate,
+        time: '14:00',
         doctorId: 'doctor123',
-        patientId: 'patient123'
+        patientId: 'patient123',
+        status: 'terjadwal',
+        notes: 'test',
       );
 
+      expect(bookingData['date'], equals(testDate));
+      expect(bookingData['time'], equals('14:00'));
       expect(bookingData['doctorId'], equals('doctor123'));
       expect(bookingData['patientId'], equals('patient123'));
-      expect(bookingData['date'], isNull);
-      expect(bookingData['time'], isNull);
-      expect(bookingData['status'], isNull);
+      expect(bookingData['status'], equals('terjadwal'));
+      expect(bookingData['notes'], equals('test'));
     });
 
     test('Booking status should be valid', () {
-      final validStatuses = ['confirmed', 'completed',];
+      final validStatuses = ['terjadwal', 'selesai',];
       
       for (final status in validStatuses) {
         final bookingData = createBookingRecordData(
+          date: testDate,
+          time: '15:00',
           doctorId: 'doctor123',
           patientId: 'patient123',
-          status: status
+          status: status,
+          notes: 'test',
         );
         expect(bookingData['status'], equals(status));
+        expect(bookingData['notes'], isNotNull);
       }
     });
   });

@@ -300,7 +300,7 @@ class _DetailRiwayatPageWidgetState extends State<DetailRiwayatPageWidget> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        'Informasi Dokter',
+                                        'Informasi Psikolog',
                                         style: FlutterFlowTheme.of(context)
                                             .headlineSmall
                                             .override(

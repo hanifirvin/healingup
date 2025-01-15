@@ -97,14 +97,22 @@ String? getScheduledTime(
   }
 
   // Jika masih ada waktu tersisa
-  final hours = difference.inHours;
+  final days = difference.inHours ~/ 24;
+  final remainingHours = difference.inHours.remainder(24);
   final remainingMinutes = minutes.remainder(60);
 
-  if (hours > 0) {
-    return '$hours jam $remainingMinutes menit';
+  String timeString = '';
+  if (days > 0) {
+    timeString += '$days hari';
+    if (remainingHours > 0) timeString += ' $remainingHours jam';
+    if (remainingMinutes > 0) timeString += ' $remainingMinutes menit';
+  } else if (remainingHours > 0) {
+    timeString += '$remainingHours jam';
+    if (remainingMinutes > 0) timeString += ' $remainingMinutes menit';
   } else {
-    return '$minutes menit';
+    timeString += '$remainingMinutes menit';
   }
+  return timeString;
 }
 
 String? getCurrentDayInIndonesian() {
@@ -126,6 +134,15 @@ DateTime? getStartOfDay() {
 DateTime? getEndOfDay() {
   final now = DateTime.now();
   return DateTime(now.year, now.month, now.day, 23, 59, 59);
+}
+
+DateTime getEndOfWeek() {
+  final now = DateTime.now();
+  // Calculate days until next Sunday
+  final daysUntilSunday = DateTime.sunday - now.weekday;
+  // If today is Sunday, we want this Sunday not next week
+  final daysToAdd = daysUntilSunday <= 0 ? 7 + daysUntilSunday : daysUntilSunday;
+  return DateTime(now.year, now.month, now.day + daysToAdd);
 }
 
 String? documentReferenceToString() {

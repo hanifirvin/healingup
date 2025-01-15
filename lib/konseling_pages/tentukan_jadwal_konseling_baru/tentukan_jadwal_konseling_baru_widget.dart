@@ -31,6 +31,7 @@ class TentukanJadwalKonselingBaruWidget extends StatefulWidget {
 class _TentukanJadwalKonselingBaruWidgetState
     extends State<TentukanJadwalKonselingBaruWidget> {
   late TentukanJadwalKonselingBaruModel _model;
+  List<String> availableTimeSlots = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -261,26 +262,85 @@ class _TentukanJadwalKonselingBaruWidgetState
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                       ),
-                                      child: CalendarDatePicker(
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime.now()
-                                            .add(const Duration(days: 30)),
-                                        onDateChanged:
-                                            (DateTime newSelectedDate) {
-                                          safeSetState(() =>
-                                              _model.calendarSelectedDay =
-                                                  DateTimeRange(
-                                                start: newSelectedDate,
-                                                end: newSelectedDate,
-                                              ));
-                                        },
-                                        selectableDayPredicate:
-                                            (DateTime date) {
-                                          return date.isAfter(DateTime.now()
-                                              .subtract(
-                                                  const Duration(days: 1)));
-                                        },
+                                      child: StreamBuilder<List<BookingRecord>>(
+                                        stream: queryBookingRecord(
+                                          queryBuilder: (query) => query
+                                              .where('doctorId', isEqualTo: widget.doctorId)
+                                              .where('status', isEqualTo: 'terjadwal'),
+                                        ),
+                                        builder: (context, snapshot) {
+                                          // Handle loading state
+                                          if (!snapshot.hasData) {
+                                            return const Center(
+                                              child: CircularProgressIndicator(),
+                                            );
+                                          }
+
+                                          final existingBookings = snapshot.data!;
+                                          
+                                          return CalendarDatePicker(
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime.now()
+                                                .add(const Duration(days: 30)),
+                                            onDateChanged:
+                                                (DateTime newSelectedDate) {
+                                              // Reset time selection when date changes
+                                              _model.dropDownValueController?.reset();
+                                              
+                                              // Get the day name for the selected date
+                                              final dayName = _getDayName(newSelectedDate.weekday);
+                                              
+                                              // Check if doctor works on this day
+                                              final isAvailableDay = containerUsersRecord!.availableDay
+                                                  .contains(dayName);
+                                              
+                                              // Update available hours based on bookings
+                                              final bookedTimes = existingBookings
+                                                  .where((booking) =>
+                                                      booking.date?.year == newSelectedDate.year &&
+                                                      booking.date?.month == newSelectedDate.month &&
+                                                      booking.date?.day == newSelectedDate.day)
+                                                  .map((booking) => booking.time)
+                                                  .toList();
+                                              
+                                              safeSetState(() {
+                                                _model.calendarSelectedDay =
+                                                    DateTimeRange(
+                                                  start: newSelectedDate,
+                                                  end: newSelectedDate,
+                                                );
+                                                
+                                                // Only show available hours if the doctor works on this day
+                                                availableTimeSlots = isAvailableDay
+                                                    ? containerUsersRecord!.availableHours
+                                                        .where((time) => !bookedTimes.contains(time))
+                                                        .toList()
+                                                    : ['Dokter tidak tersedia di hari ini'];
+                                              });
+                                            },
+                                            selectableDayPredicate:
+                                                (date) {
+                                              // Get the day name
+                                              final dayName = _getDayName(date.weekday);
+                                              
+                                              // Check if doctor works on this day
+                                              final isAvailableDay = containerUsersRecord!.availableDay
+                                                  .contains(dayName);
+                                              
+                                              if (!isAvailableDay) {
+                                                return false;
+                                              }
+                                              
+                                              // Get date constraints
+                                              final (startDate, endDate) = _getWeekBounds();
+                                              
+                                              // Allow only dates within the current week bounds
+                                              return !date.isBefore(startDate) && 
+                                                     !date.isAfter(endDate);
+                                            },
+                                          );
+                                        }
                                       ),
                                     ),
                                   ].divide(const SizedBox(height: 16.0)),
@@ -369,30 +429,38 @@ class _TentukanJadwalKonselingBaruWidgetState
                                         controller: _model
                                                 .dropDownValueController ??=
                                             FormFieldController<String>(null),
-                                        options: containerUsersRecord!
-                                            .availableHours,
-                                        onChanged: (val) => safeSetState(
-                                            () => _model.dropDownValue = val),
-                                        width:
-                                            MediaQuery.sizeOf(context).width *
-                                                1.0,
+                                        options: _model.calendarSelectedDay != null
+                                            ? availableTimeSlots
+                                            : ['Pilih tanggal terlebih dahulu'],
+                                        onChanged: (val) =>
+                                            setState(() => _model.dropDownValue = val),
+                                        width: 300.0,
                                         height: 50.0,
                                         textStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
+                                            .bodyMedium
                                             .override(
                                               fontFamily: 'Readex Pro',
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primaryText,
                                               letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w500,
                                             ),
-                                        hintText: 'Pilih waktu',
+                                        hintText: 'Pilih Waktu Konsultasi',
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 24.0,
+                                        ),
                                         fillColor: FlutterFlowTheme.of(context)
-                                            .accent4,
-                                        elevation: 0.0,
-                                        borderColor: const Color(0xFFE0E3E7),
-                                        borderWidth: 1.0,
+                                            .secondaryBackground,
+                                        elevation: 2.0,
+                                        borderColor: FlutterFlowTheme.of(context)
+                                            .alternate,
+                                        borderWidth: 2.0,
                                         borderRadius: 8.0,
-                                        margin: const EdgeInsetsDirectional
-                                            .fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                        margin: const EdgeInsetsDirectional.fromSTEB(
+                                            16.0, 4.0, 16.0, 4.0),
+                                        hidesUnderline: true,
                                         isSearchable: false,
                                         isMultiSelect: false,
                                       ),
@@ -702,5 +770,61 @@ class _TentukanJadwalKonselingBaruWidgetState
         );
       },
     );
+  }
+
+  // Helper function to get day name
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Senin';
+      case DateTime.tuesday:
+        return 'Selasa';
+      case DateTime.wednesday:
+        return 'Rabu';
+      case DateTime.thursday:
+        return 'Kamis';
+      case DateTime.friday:
+        return 'Jumat';
+      case DateTime.saturday:
+        return 'Sabtu';
+      case DateTime.sunday:
+        return 'Minggu';
+      default:
+        return '';
+    }
+  }
+
+  // Get the start and end of current week
+  (DateTime, DateTime) _getWeekBounds() {
+    final now = DateTime.now();
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    
+    // If it's Monday, start from today and allow the whole week
+    if (now.weekday == DateTime.monday) {
+      final endOfWeek = startOfToday.add(Duration(days: 6)); // Sunday
+      return (startOfToday, endOfWeek);
+    }
+    
+    // For other days, only allow remainder of the week
+    final daysUntilSunday = DateTime.sunday - now.weekday;
+    final daysToAdd = daysUntilSunday <= 0 ? 7 + daysUntilSunday : daysUntilSunday;
+    final endOfWeek = startOfToday.add(Duration(days: daysToAdd - 1)); // Until Sunday
+    return (startOfToday, endOfWeek);
+  }
+
+  // Get the end of current week (Sunday)
+  DateTime _getEndOfWeek() {
+    final now = DateTime.now();
+    // Calculate days until next Sunday
+    final daysUntilSunday = DateTime.sunday - now.weekday;
+    // If today is Sunday, we want this Sunday not next week
+    final daysToAdd = daysUntilSunday <= 0 ? 7 + daysUntilSunday : daysUntilSunday;
+    return DateTime(now.year, now.month, now.day + daysToAdd);
+  }
+
+  // Get start of today
+  DateTime _getStartOfToday() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
   }
 }
