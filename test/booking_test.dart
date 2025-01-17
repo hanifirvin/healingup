@@ -54,7 +54,7 @@ void main() {
           notes: 'test',
         );
         expect(bookingData['status'], equals(status));
-        expect(bookingData['notes'], isNotNull);
+        expect(bookingData['notes'], equals('test'));
       }
     });
   });

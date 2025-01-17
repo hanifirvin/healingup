@@ -128,7 +128,7 @@ Future<void> selectDoctorAndTime(WidgetTester tester) async {
     await tester.tap(calendarIcon.first);
     await tester.pumpAndSettle();
 
-    // Memilih tanggal hari ini
+    // Memilih tanggal
     final today = DateTime.now();
     final dateText = today.day.toString();
     final dateButton = find.text(dateText);
@@ -144,7 +144,7 @@ Future<void> selectDoctorAndTime(WidgetTester tester) async {
     }
   }
 
-  // Mencoba menemukan dan menekan slot waktu yang sesuai dengan waktu saat ini
+  // Mencoba menemukan dan menekan slot waktu 
   final now = DateTime.now();
   final currentHour = now.hour;
   final timeSlots = find.byType(ListTile);

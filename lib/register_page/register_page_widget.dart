@@ -5,6 +5,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'register_page_model.dart';
 export 'register_page_model.dart';
 
@@ -365,8 +366,6 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   child: FFButtonWidget(
                     onPressed: () async {
                       try {
-                        GoRouter.of(context).prepareAuthEvent();
-
                         final user = await authManager.createAccountWithEmail(
                           context,
                           _model.daftarEmailTextController.text,
@@ -374,7 +373,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                         );
                         if (user == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text(
                                 'Failed to create account. Please check your email and password.',
                                 style: TextStyle(
@@ -387,22 +386,111 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                           return;
                         }
 
-                        await UsersRecord.collection
-                            .doc(user.uid)
-                            .update(createUsersRecordData(
-                              role: 'pasien',
-                              displayName: _model.daftarNamaTextController.text,
-                              photoUrl: '',
-                            ));
+                        await UsersRecord.collection.doc(user.uid).set({
+                          ...createUsersRecordData(
+                            email: _model.daftarEmailTextController.text,
+                            displayName: _model.daftarNamaTextController.text,
+                            photoUrl: '',
+                            role: 'pasien',
+                            uid: user.uid,
+                            createdTime: getCurrentTimestamp,
+                          ),
+                        });
 
-                        context.goNamedAuth('home_dashboard_baru', context.mounted);
+                        // Sign out immediately after creating account
+                        await authManager.signOut();
+                        
+                        if (!mounted) return;
+
+                        // Show verification dialog with resend button
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Verify Your Email'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Please check your email to verify your account before logging in. If you don\'t see the email, check your spam folder.',
+                                ),
+                                const SizedBox(height: 20),
+                                FFButtonWidget(
+                                  onPressed: () async {
+                                    try {
+                                      // Use Firebase Auth directly for resending verification
+                                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                        email: _model.daftarEmailTextController.text,
+                                        password: _model.daftarPasswordTextController.text,
+                                      ).then((userCredential) async {
+                                        if (userCredential.user != null) {
+                                          await userCredential.user!.sendEmailVerification();
+                                          await FirebaseAuth.instance.signOut();
+                                          if (!mounted) return;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Verification email sent again!',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                      });
+                                    } catch (e) {
+                                      print('Error resending verification: $e');
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Error: ${e.toString()}',
+                                            style: const TextStyle(color: Colors.white),
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  text: 'Resend Verification Email',
+                                  options: FFButtonOptions(
+                                    width: 200,
+                                    height: 40,
+                                    color: const Color(0xFF6264A7),
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .override(
+                                          fontFamily: 'Readex Pro',
+                                          color: Colors.white,
+                                        ),
+                                    elevation: 3,
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  if (!mounted) return;
+                                  context.goNamedAuth('loginPage', mounted);
+                                },
+                                child: const Text('Go to Login'),
+                              ),
+                            ],
+                          ),
+                        );
                       } catch (e) {
                         print('Error during registration: $e');
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                               'Error: ${e.toString()}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
