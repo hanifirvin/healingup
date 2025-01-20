@@ -91,10 +91,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                 size: 30.0,
               ),
               onPressed: () async {
-                FFAppState().kessler = 0;
-                safeSetState(() {});
-
-                context.pushNamed('pengukuran_page');
+                context.pop();
               },
             ),
           ),
@@ -184,9 +181,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 1;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(3, 1);
 
                                           context.pushNamed('quiz5');
                                         },
@@ -224,9 +219,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 2;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(3, 2);
 
                                           context.pushNamed('quiz5');
                                         },
@@ -264,9 +257,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 3;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(3, 3);
 
                                           context.pushNamed('quiz5');
                                         },
@@ -304,9 +295,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 4;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(3, 4);
 
                                           context.pushNamed('quiz5');
                                         },
@@ -344,9 +333,7 @@ class _Quiz4WidgetState extends State<Quiz4Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 5;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(3, 5);
 
                                           context.pushNamed('quiz5');
                                         },

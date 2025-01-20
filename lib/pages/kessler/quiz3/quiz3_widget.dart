@@ -10,7 +10,6 @@ import 'quiz3_model.dart';
 export 'quiz3_model.dart';
 
 class Quiz3Widget extends StatefulWidget {
-  /// change all the button fill color To #4C4F81
   const Quiz3Widget({super.key});
 
   @override
@@ -92,10 +91,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                 size: 30.0,
               ),
               onPressed: () async {
-                context.pushNamed('pengukuran_page');
-
-                FFAppState().kessler = 0;
-                safeSetState(() {});
+                context.pop();
               },
             ),
           ),
@@ -185,9 +181,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 1;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(2, 1);
 
                                           context.pushNamed('quiz4');
                                         },
@@ -225,9 +219,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 2;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(2, 2);
 
                                           context.pushNamed('quiz4');
                                         },
@@ -265,9 +257,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 3;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(2, 3);
 
                                           context.pushNamed('quiz4');
                                         },
@@ -305,9 +295,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 4;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(2, 4);
 
                                           context.pushNamed('quiz4');
                                         },
@@ -345,9 +333,7 @@ class _Quiz3WidgetState extends State<Quiz3Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 5;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(2, 5);
 
                                           context.pushNamed('quiz4');
                                         },

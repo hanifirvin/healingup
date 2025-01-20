@@ -96,10 +96,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                 size: 30.0,
               ),
               onPressed: () async {
-                FFAppState().kessler = 0;
-                safeSetState(() {});
-
-                context.pushNamed('pengukuran_page');
+                context.pop();
               },
             ),
           ),
@@ -189,19 +186,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 1;
-                                          safeSetState(() {});
-
-                                          await KesslerRecord.collection
-                                              .doc()
-                                              .set(createKesslerRecordData(
-                                                hasilKessler:
-                                                    FFAppState().kessler,
-                                                waktuRiwayat:
-                                                    getCurrentTimestamp,
-                                                patientId: currentUserUid,
-                                              ));
+                                          FFAppState().updateQuizAnswer(9, 1);
 
                                           context.pushNamed(
                                               'hasil_pengukuran_page');
@@ -240,19 +225,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 2;
-                                          safeSetState(() {});
-
-                                          await KesslerRecord.collection
-                                              .doc()
-                                              .set(createKesslerRecordData(
-                                                hasilKessler:
-                                                    FFAppState().kessler,
-                                                waktuRiwayat:
-                                                    getCurrentTimestamp,
-                                                patientId: currentUserUid,
-                                              ));
+                                          FFAppState().updateQuizAnswer(9, 2);
 
                                           context.pushNamed(
                                               'hasil_pengukuran_page');
@@ -291,19 +264,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 3;
-                                          safeSetState(() {});
-
-                                          await KesslerRecord.collection
-                                              .doc()
-                                              .set(createKesslerRecordData(
-                                                hasilKessler:
-                                                    FFAppState().kessler,
-                                                waktuRiwayat:
-                                                    getCurrentTimestamp,
-                                                patientId: currentUserUid,
-                                              ));
+                                          FFAppState().updateQuizAnswer(9, 3);
 
                                           context.pushNamed(
                                               'hasil_pengukuran_page');
@@ -342,19 +303,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 4;
-                                          safeSetState(() {});
-
-                                          await KesslerRecord.collection
-                                              .doc()
-                                              .set(createKesslerRecordData(
-                                                hasilKessler:
-                                                    FFAppState().kessler,
-                                                waktuRiwayat:
-                                                    getCurrentTimestamp,
-                                                patientId: currentUserUid,
-                                              ));
+                                          FFAppState().updateQuizAnswer(9, 4);
 
                                           context.pushNamed(
                                               'hasil_pengukuran_page');
@@ -393,19 +342,7 @@ class _Quiz10WidgetState extends State<Quiz10Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 5;
-                                          safeSetState(() {});
-
-                                          await KesslerRecord.collection
-                                              .doc()
-                                              .set(createKesslerRecordData(
-                                                hasilKessler:
-                                                    FFAppState().kessler,
-                                                waktuRiwayat:
-                                                    getCurrentTimestamp,
-                                                patientId: currentUserUid,
-                                              ));
+                                          FFAppState().updateQuizAnswer(9, 5);
 
                                           context.pushNamed(
                                               'hasil_pengukuran_page');

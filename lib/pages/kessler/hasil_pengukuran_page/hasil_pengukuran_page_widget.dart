@@ -2,6 +2,7 @@ import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/auth/firebase_auth/auth_util.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,17 @@ class _HasilPengukuranPageWidgetState extends State<HasilPengukuranPageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => HasilPengukuranPageModel());
+
+    Future.delayed(Duration.zero, () async {
+      await KesslerRecord.collection
+          .doc()
+          .set(createKesslerRecordData(
+            hasilKessler: FFAppState().kessler,
+            waktuRiwayat: getCurrentTimestamp,
+            patientId: currentUserReference?.id,
+            answers: FFAppState().quizAnswers,
+          ));
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -80,14 +92,14 @@ class _HasilPengukuranPageWidgetState extends State<HasilPengukuranPageWidget> {
                           0.0, 20.0, 0.0, 0.0),
                       child: Text(
                         () {
-                          if (FFAppState().kessler < 20) {
-                            return 'Tidak Mengalami Stres';
-                          } else if (FFAppState().kessler < 25) {
-                            return 'Mengalami Stres Ringan';
-                          } else if (FFAppState().kessler < 30) {
-                            return 'Mengalami Stres Sedang';
-                          } else {
+                          if (FFAppState().kessler >= 30) {
                             return 'Mengalami Stres Berat';
+                          } else if (FFAppState().kessler >= 25) {
+                            return 'Mengalami Stres Sedang';
+                          } else if (FFAppState().kessler >= 20) {
+                            return 'Mengalami Stres Ringan';
+                          } else {
+                            return 'Tidak Mengalami Stres';
                           }
                         }(),
                         textAlign: TextAlign.center,

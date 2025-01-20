@@ -37,6 +37,12 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _boxBreath = prefs.getInt('ff_boxBreath') ?? _boxBreath;
     });
+    _safeInit(() {
+      _quizAnswers = prefs.getStringList('ff_quizAnswers')?.map((x) => int.parse(x)).toList() ?? _quizAnswers;
+    });
+    _safeInit(() {
+      _kessler = prefs.getInt('ff_kessler') ?? _kessler;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -46,10 +52,42 @@ class FFAppState extends ChangeNotifier {
 
   late SharedPreferences prefs;
 
+  List<int> _quizAnswers = List.filled(10, 0);
+  List<int> get quizAnswers => _quizAnswers;
+  set quizAnswers(List<int> value) {
+    _quizAnswers = value;
+    prefs.setStringList('ff_quizAnswers', value.map((x) => x.toString()).toList());
+  }
+
+  void updateQuizAnswer(int questionIndex, int newAnswer) {
+    // Calculate score difference
+    int oldScore = _quizAnswers[questionIndex];
+    int scoreDiff = newAnswer - oldScore;
+    
+    // Update answer
+    _quizAnswers[questionIndex] = newAnswer;
+    prefs.setStringList('ff_quizAnswers', _quizAnswers.map((x) => x.toString()).toList());
+    
+    // Update total score
+    _kessler = _kessler + scoreDiff;
+    prefs.setInt('ff_kessler', _kessler);
+    notifyListeners();
+  }
+
+  void resetQuiz() {
+    _quizAnswers = List.filled(10, 0);
+    _kessler = 0;
+    prefs.setStringList('ff_quizAnswers', _quizAnswers.map((x) => x.toString()).toList());
+    prefs.setInt('ff_kessler', _kessler);
+    notifyListeners();
+  }
+
   int _kessler = 0;
   int get kessler => _kessler;
   set kessler(int value) {
     _kessler = value;
+    prefs.setInt('ff_kessler', value);
+    notifyListeners();
   }
 
   double _jurnalimagevalue = 0.0;

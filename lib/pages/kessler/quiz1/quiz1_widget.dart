@@ -10,7 +10,6 @@ import 'quiz1_model.dart';
 export 'quiz1_model.dart';
 
 class Quiz1Widget extends StatefulWidget {
-  /// change button color to #4C4F81
   const Quiz1Widget({super.key});
 
   @override
@@ -29,6 +28,9 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
   void initState() {
     super.initState();
     _model = createModel(context, () => Quiz1Model());
+
+    // Reset quiz when starting
+    FFAppState().resetQuiz();
 
     animationsMap.addAll({
       'textOnPageLoadAnimation': AnimationInfo(
@@ -92,10 +94,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                 size: 30.0,
               ),
               onPressed: () async {
-                FFAppState().kessler = 0;
-                safeSetState(() {});
-
-                context.pushNamed('pengukuran_page');
+                context.pop();
               },
             ),
           ),
@@ -185,10 +184,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler +
-                                                  _model.option1!;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(0, 1);
 
                                           context.pushNamed('quiz2');
                                         },
@@ -226,10 +222,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler +
-                                                  _model.option2!;
-                                          FFAppState().update(() {});
+                                          FFAppState().updateQuizAnswer(0, 2);
 
                                           context.pushNamed('quiz2');
                                         },
@@ -267,10 +260,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler +
-                                                  _model.option3!;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(0, 3);
 
                                           context.pushNamed('quiz2');
                                         },
@@ -308,9 +298,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 4;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(0, 4);
 
                                           context.pushNamed('quiz2');
                                         },
@@ -348,9 +336,7 @@ class _Quiz1WidgetState extends State<Quiz1Widget>
                                           0.0, 0.0, 0.0, 20.0),
                                       child: FFButtonWidget(
                                         onPressed: () async {
-                                          FFAppState().kessler =
-                                              FFAppState().kessler + 5;
-                                          safeSetState(() {});
+                                          FFAppState().updateQuizAnswer(0, 5);
 
                                           context.pushNamed('quiz2');
                                         },
