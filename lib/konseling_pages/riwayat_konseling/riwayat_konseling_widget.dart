@@ -107,17 +107,18 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
-                  child: FutureBuilder<List<SessionsRecord>>(
-                    future: querySessionsRecordOnce(
-                      queryBuilder: (sessionsRecord) => sessionsRecord
+                  child: FutureBuilder<List<BookingRecord>>(
+                    future: queryBookingRecordOnce(
+                      queryBuilder: (bookingRecord) => bookingRecord
                           .where(
                             'patientId',
                             isEqualTo: currentUserUid,
                           )
-                          .orderBy('createdAt', descending: true),
+                          .orderBy('createdAt', descending: true)
+                          .limit(50),
                     ),
                     builder: (context, snapshot) {
-                      print('Found ${snapshot.data?.length ?? 0} sessions for user $currentUserUid');
+                      print('Found ${snapshot.data?.length ?? 0} bookings for user $currentUserUid');
                       if (!snapshot.hasData) {
                         return Center(
                           child: SizedBox(
@@ -131,9 +132,9 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                           ),
                         );
                       }
-                      List<SessionsRecord> listViewSessionsRecordList = snapshot.data!;
+                      List<BookingRecord> listViewBookingRecordList = snapshot.data!;
 
-                      if (listViewSessionsRecordList.isEmpty) {
+                      if (listViewBookingRecordList.isEmpty) {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(32.0),
@@ -165,11 +166,11 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                         primary: false,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount: listViewSessionsRecordList.length,
+                        itemCount: listViewBookingRecordList.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 12.0),
                         itemBuilder: (context, listViewIndex) {
-                          final listViewSessionsRecord =
-                              listViewSessionsRecordList[listViewIndex];
+                          final listViewBookingRecord =
+                              listViewBookingRecordList[listViewIndex];
                           return Material(
                             color: Colors.transparent,
                             elevation: 2.0,
@@ -196,9 +197,14 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                                       width: 4.0,
                                       height: 100.0,
                                       decoration: BoxDecoration(
-                                        color: listViewSessionsRecord.status == 'selesai'
-                                            ? const Color(0xFF4CAF50)
-                                            : const Color(0xFF5D629A),
+                                        color: () {
+                                          if (listViewBookingRecord.status == 'selesai') {
+                                            return const Color(0xFF4CAF50);
+                                          } else if (listViewBookingRecord.status == 'dibatalkan') {
+                                            return const Color(0xFFFF5963);
+                                          }
+                                          return const Color(0xFF5D629A);
+                                        }(),
                                         borderRadius: BorderRadius.circular(2.0),
                                       ),
                                     ),
@@ -214,8 +220,8 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
-                                                  listViewSessionsRecord.createdAt != null
-                                                      ? functions.formatDateIndonesian(listViewSessionsRecord.createdAt!)
+                                                  listViewBookingRecord.createdAt != null
+                                                      ? functions.formatDateIndonesian(listViewBookingRecord.createdAt!)
                                                       : 'Tanggal tidak tersedia',
                                                   style: FlutterFlowTheme.of(context).labelMedium.override(
                                                         fontFamily: 'Readex Pro',
@@ -225,20 +231,39 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                                                 ),
                                                 Container(
                                                   decoration: BoxDecoration(
-                                                    color: listViewSessionsRecord.status == 'selesai'
-                                                        ? const Color(0x1A4CAF50)
-                                                        : const Color(0x1A5D629A),
+                                                    color: () {
+                                                      if (listViewBookingRecord.status == 'selesai') {
+                                                        return const Color(0x1A4CAF50);
+                                                      } else if (listViewBookingRecord.status == 'dibatalkan') {
+                                                        return const Color(0x1AFF5963);
+                                                      }
+                                                      return const Color(0x1A5D629A);
+                                                    }(),
                                                     borderRadius: BorderRadius.circular(16.0),
                                                   ),
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                                     child: Text(
-                                                      listViewSessionsRecord.status,
+                                                      () {
+                                                        if (listViewBookingRecord.status == 'selesai') {
+                                                          return 'Selesai';
+                                                        } else if (listViewBookingRecord.status == 'dibatalkan') {
+                                                          return 'Dibatalkan';
+                                                        } else if (listViewBookingRecord.status == 'terjadwal') {
+                                                          return 'Terjadwal';
+                                                        }
+                                                        return listViewBookingRecord.status;
+                                                      }(),
                                                       style: FlutterFlowTheme.of(context).bodySmall.override(
                                                             fontFamily: 'Readex Pro',
-                                                            color: listViewSessionsRecord.status == 'selesai'
-                                                                ? const Color(0xFF4CAF50)
-                                                                : const Color(0xFF5D629A),
+                                                            color: () {
+                                                              if (listViewBookingRecord.status == 'selesai') {
+                                                                return const Color(0xFF4CAF50);
+                                                              } else if (listViewBookingRecord.status == 'dibatalkan') {
+                                                                return const Color(0xFFFF5963);
+                                                              }
+                                                              return const Color(0xFF5D629A);
+                                                            }(),
                                                             letterSpacing: 0.0,
                                                             fontWeight: FontWeight.w500,
                                                           ),
@@ -249,45 +274,62 @@ class _RiwayatKonselingWidgetState extends State<RiwayatKonselingWidget> {
                                             ),
                                             const SizedBox(height: 8.0),
                                             Text(
-                                              listViewSessionsRecord.doctorName,
+                                              listViewBookingRecord.doctorName,
                                               style: FlutterFlowTheme.of(context).titleMedium.override(
                                                     fontFamily: 'Readex Pro',
                                                     color: FlutterFlowTheme.of(context).primaryText,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),
-                                            if (listViewSessionsRecord.reviewRating != null)
-                                              Padding(
-                                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.star_rounded,
-                                                      color: const Color(0xFFFFC107),
-                                                      size: 20.0,
-                                                    ),
-                                                    const SizedBox(width: 4.0),
-                                                    Text(
-                                                      listViewSessionsRecord.reviewRating.toString(),
-                                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                            fontFamily: 'Readex Pro',
-                                                            color: FlutterFlowTheme.of(context).secondaryText,
-                                                            letterSpacing: 0.0,
-                                                          ),
-                                                    ),
-                                                  ],
+                                            if (listViewBookingRecord.status == 'selesai')
+                                              FutureBuilder<List<SessionsRecord>>(
+                                                future: querySessionsRecordOnce(
+                                                  queryBuilder: (sessionsRecord) => sessionsRecord
+                                                      .where('bookingId', isEqualTo: listViewBookingRecord.bookingId)
+                                                      .where('status', isEqualTo: 'selesai'),
+                                                  singleRecord: true,
                                                 ),
+                                                builder: (context, snapshot) {
+                                                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                                    return const SizedBox();
+                                                  }
+                                                  final sessionRecord = snapshot.data!.first;
+                                                  if (sessionRecord.reviewRating == null) {
+                                                    return const SizedBox();
+                                                  }
+                                                  return Padding(
+                                                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.star_rounded,
+                                                          color: const Color(0xFFFFC107),
+                                                          size: 20.0,
+                                                        ),
+                                                        const SizedBox(width: 4.0),
+                                                        Text(
+                                                          sessionRecord.reviewRating.toString(),
+                                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                fontFamily: 'Readex Pro',
+                                                                color: FlutterFlowTheme.of(context).secondaryText,
+                                                                letterSpacing: 0.0,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             const SizedBox(height: 8.0),
                                             FFButtonWidget(
                                               onPressed: () async {
-                                                print('Navigating to detail with sessionId: ${listViewSessionsRecord.reference.id}'); // Debug print
+                                                print('Navigating to detail with bookingId: ${listViewBookingRecord.reference.id}'); // Debug print
                                                 context.pushNamed(
                                                   'detail_riwayat_page',
                                                   queryParameters: {
                                                     'sessionId': serializeParam(
-                                                      listViewSessionsRecord.reference.id,
+                                                      listViewBookingRecord.reference.id,
                                                       ParamType.String,
                                                     ),
                                                   }.withoutNulls,

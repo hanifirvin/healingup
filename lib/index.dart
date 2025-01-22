@@ -79,3 +79,5 @@ export '/doctor_pages/isi_jurnal_pasien/isi_jurnal_pasien_widget.dart'
     show IsiJurnalPasienWidget;
 export '/doctor_pages/detail_sesi_dokter/detail_sesi_dokter_widget.dart'
     show DetailSesiDokterWidget;
+export '/doctor_pages/riwayat_konseling_dokter/riwayat_konseling_dokter_widget.dart'
+    show RiwayatKonselingDokterWidget;

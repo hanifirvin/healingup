@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'dokter_page_utama_model.dart';
+import '/doctor_pages/riwayat_konseling_dokter/riwayat_konseling_dokter_widget.dart';
 export 'dokter_page_utama_model.dart';
 
 class DokterPageUtamaWidget extends StatefulWidget {
@@ -162,8 +163,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                 ),
                                 FFButtonWidget(
                                   onPressed: () async {
-                                    context
-                                        .pushNamed('edit_profile_dokter_baru');
+                                    context.pushNamed('edit_profile_dokter_baru');
                                   },
                                   text: 'Edit Profil',
                                   options: FFButtonOptions(
@@ -277,8 +277,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                     hoverColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
                                     onTap: () async {
-                                      context
-                                          .pushNamed('atur_jadwal_dokter_baru');
+                                      context.pushNamed('atur_jadwal_dokter_baru');
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -302,6 +301,55 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                         ),
                                         Text(
                                           'Jadwal',
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .override(
+                                                fontFamily: 'Readex Pro',
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryText,
+                                                letterSpacing: 0.0,
+                                              ),
+                                        ),
+                                      ].divide(const SizedBox(height: 8.0)),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RiwayatKonselingDokterWidget(),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: 60.0,
+                                          height: 60.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .accent1,
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                          ),
+                                          child: const Icon(
+                                            Icons.history,
+                                            color: Color(0xFF6264A7),
+                                            size: 30.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Riwayat',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
@@ -390,6 +438,21 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                   List<BookingRecord>
                                       listViewBookingRecordList =
                                       snapshot.data!;
+
+                                  if (listViewBookingRecordList.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        'Belum ada sesi terjadwal',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Readex Pro',
+                                              color: FlutterFlowTheme.of(context)
+                                                  .secondaryText,
+                                            ),
+                                      ),
+                                    );
+                                  }
 
                                   return ListView.separated(
                                     padding: EdgeInsets.zero,
@@ -490,8 +553,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                                                 'detail_sesi_dokter',
                                                 queryParameters: {
                                                   'bookingId': serializeParam(
-                                                    listViewBookingRecord
-                                                        .bookingId,
+                                                    listViewBookingRecord.bookingId,
                                                     ParamType.String,
                                                   ),
                                                 }.withoutNulls,
@@ -537,10 +599,7 @@ class _DokterPageUtamaWidgetState extends State<DokterPageUtamaWidget> {
                           const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
                       child: FFButtonWidget(
                         onPressed: () async {
-                          GoRouter.of(context).prepareAuthEvent();
                           await authManager.signOut();
-                          GoRouter.of(context).clearRedirectLocation();
-
                           context.goNamedAuth('welcome', context.mounted);
                         },
                         text: 'Logout',

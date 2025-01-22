@@ -14,7 +14,7 @@ Future<UserCredential?> emailSignInFunc(
     await FirebaseAuth.instance.signOut();
     throw FirebaseAuthException(
       code: 'email-not-verified',
-      message: 'Please verify your email before signing in.',
+      message: 'Mohon verifikasi email anda sebelum anda melakukan login.',
     );
   }
   

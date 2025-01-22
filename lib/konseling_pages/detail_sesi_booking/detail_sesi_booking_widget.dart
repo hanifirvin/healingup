@@ -463,6 +463,99 @@ class _DetailSesiBookingWidgetState extends State<DetailSesiBookingWidget> {
                           ),
                         ),
                       ),
+                      Builder(
+                        builder: (context) {
+                          final now = DateTime.now();
+                          final sessionDate = detailSesiBookingBookingRecord.date;
+                          final sessionTime = detailSesiBookingBookingRecord.time;
+
+                          // Parse session time
+                          final timeParts = sessionTime.split(':');
+                          final sessionDateTime = DateTime(
+                            sessionDate!.year,
+                            sessionDate.month,
+                            sessionDate.day,
+                            int.parse(timeParts[0]),
+                            int.parse(timeParts[1]),
+                          );
+
+                          // Only show cancel button if session is more than 1 hour away
+                          if (detailSesiBookingBookingRecord.status == 'terjadwal' &&
+                              sessionDateTime.difference(now).inHours > 1) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: FFButtonWidget(
+                                onPressed: () async {
+                                  var confirmDialogResponse = await showDialog<bool>(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: const Text('Konfirmasi Pembatalan'),
+                                        content: const Text(
+                                            'Apakah Anda yakin ingin membatalkan sesi konseling ini?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext, false),
+                                            child: const Text('Tidak'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext, true),
+                                            child: const Text('Ya'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ) ??
+                                      false;
+                                  if (confirmDialogResponse) {
+                                    await detailSesiBookingBookingRecord.reference
+                                        .update({
+                                      'status': 'dibatalkan',
+                                      'canceledAt': FieldValue.serverTimestamp(),
+                                    });
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Sesi konseling berhasil dibatalkan',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        duration: Duration(seconds: 4),
+                                        backgroundColor: Color(0xFF4C4F81),
+                                      ),
+                                    );
+                                  }
+                                },
+                                text: 'Batalkan Sesi',
+                                icon: const Icon(
+                                  Icons.cancel_outlined,
+                                  size: 15,
+                                ),
+                                options: FFButtonOptions(
+                                  width: double.infinity,
+                                  height: 40,
+                                  color: FlutterFlowTheme.of(context).error,
+                                  textStyle: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .override(
+                                        fontFamily: 'Readex Pro',
+                                        color: Colors.white,
+                                      ),
+                                  borderSide: const BorderSide(
+                                    color: Colors.transparent,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink(); // Don't show button if within 1 hour
+                        },
+                      ),
                       if (((functions.getScheduledTime(
                                       detailSesiBookingBookingRecord.createdAt,
                                       detailSesiBookingBookingRecord.time,

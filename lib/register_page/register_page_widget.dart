@@ -406,12 +406,12 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                         await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('Verify Your Email'),
+                            title: const Text('Verifikasi Email Anda'),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Text(
-                                  'Please check your email to verify your account before logging in. If you don\'t see the email, check your spam folder.',
+                                  'Mohon periksa email anda untuk link verifikasi akun sebelum login. Jika anda tidak menemukan email, periksa folder spam anda.',
                                 ),
                                 const SizedBox(height: 20),
                                 FFButtonWidget(
@@ -451,7 +451,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                                       );
                                     }
                                   },
-                                  text: 'Resend Verification Email',
+                                  text: 'Kirim Ulang Verifikasi Email',
                                   options: FFButtonOptions(
                                     width: 200,
                                     height: 40,
@@ -479,7 +479,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                                   if (!mounted) return;
                                   context.goNamedAuth('loginPage', mounted);
                                 },
-                                child: const Text('Go to Login'),
+                                child: const Text('Login'),
                               ),
                             ],
                           ),
